@@ -1,0 +1,34 @@
+<div class="navbar">
+  <div class="nav-company">
+    <img class="navbar-photo" src="./assets/media/logo.ico" alt="Company photo" />
+    <span *ngIf="token == null">Url Shortener</span>
+    <span *ngIf="token != null">Welcome, {{decodedToken.username}} !</span>
+  </div>
+
+  <div [routerLinkActive]="['active']">
+    <span>
+      <a routerLink='/home' routerLinkActive='active'>Home</a>
+    </span>
+
+    <span>
+      <a routerLink='/info' routerLinkActive='active'>Short Url's Info</a>
+    </span>
+
+    <span>
+      <a routerLink='/about' routerLinkActive='active'>About</a>
+    </span>
+  </div>
+
+  <span class="example-spacer"></span>
+  <button mat-raised-button class="button-color" (click)="openLinkForm()" *ngIf="token != null">
+    Add link
+  </button>
+  <button mat-raised-button (click)="openLoginForm()" *ngIf="token == null">
+    Log In
+  </button>
+  <button mat-raised-button class="button-color" (click)="onLogout()" *ngIf="token != null">
+    Log Out
+  </button>
+</div>
+
+<router-outlet></router-outlet>

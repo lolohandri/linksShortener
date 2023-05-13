@@ -1,0 +1,32 @@
+<div mat-dialog-title class="title">
+    <h1>Add url</h1>
+</div>
+
+<div mat-dialog-content class="content">
+    <form [formGroup]="linkForm" (ngSubmit)="onSubmit()">
+        <div class="input-field">
+            <mat-form-field appearance="outline">
+                <mat-label>Url</mat-label>
+                <input matInput placeholder="https://example.com" [(ngModel)]='inputField' formControlName="url" />
+            </mat-form-field>
+            <button mat-raised-button class="button-color" class="add-button" type="submit">Add</button>
+        </div>
+    </form>
+
+    <div class="output">
+        <span>{{shortUrl}}</span>
+        <button class="button-color" (click)="onCopy()" [cdkCopyToClipboard]="shortUrl"
+            *ngIf="shortUrl != '' && httpStatus == 200">
+            {{buttonLabel}}
+        </button>
+    </div>
+</div>
+
+<div mat-dialog-actions class=" actions">
+    <button class="white-button" (click)="onClose()">
+        Close
+    </button>
+    <button class="button-color" (click)="onClear()">
+        Clear
+    </button>
+</div>

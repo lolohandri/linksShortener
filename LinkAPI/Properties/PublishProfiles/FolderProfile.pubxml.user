@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\sviat\OneDrive\Робочий стіл\UrlShortener\shorturl</_PublishTargetUrl>
+    <History>True|2023-05-10T17:59:57.4152425Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="LinksDb">
+      <Value>Server = localhost%3b Port = 5432%3b Database = links%3b User Id = postgres%3b Password = senseye3LED%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>
