@@ -13,8 +13,7 @@ export class InfoComponent {
   displayedColumns: string[] = [
     'shortLink',
     'date',
-    'createdBy',
-    'action',
+    'createdBy'
   ];
 
   linksData: Link[] = [];
@@ -22,7 +21,7 @@ export class InfoComponent {
 
   constructor(
     private _linkService: LinksService,
-    private datepipe: DatePipe,
+    private datepipe: DatePipe
   ) { }
 
   ngOnInit(): void {

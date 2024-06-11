@@ -3,20 +3,18 @@ using LinkAPI.Interfaces;
 using LinkAPI.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace LinkAPI.Controllers
 {
-    [Route("api/auth")]
+    [Route("auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         public AuthController(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
@@ -30,10 +28,11 @@ namespace LinkAPI.Controllers
         {
             if(_unitOfWork.UserRepository.IsUserExists(userDto.Username))
             {
-                return BadRequest("User already exists");
+                var errorResponse = new { message = "User already exists" };
+                return BadRequest(errorResponse);
             }
             var currentUser = new User();
-            CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            CreatePasswordHash(userDto.Password, out var passwordHash, out var passwordSalt);
             currentUser.Username = userDto.Username;
             currentUser.PasswordHash = passwordHash;
             currentUser.PasswordSalt = passwordSalt;
@@ -51,13 +50,15 @@ namespace LinkAPI.Controllers
         {
             if (!_unitOfWork.UserRepository.IsUserExists(loginDto.Username))
             {
-                return BadRequest("Invalid password or username");
+                var errorResponse = new { message = "Invalid password or username" };
+                return BadRequest(errorResponse);
             }
             var currentUser = _unitOfWork.UserRepository.GetUserByUsername(loginDto.Username);
 
             if(!VerifyPassword(loginDto.Password, currentUser.PasswordHash, currentUser.PasswordSalt))
             {
-                return BadRequest("Invalid password or username");
+                var errorResponse = new { message = "Invalid password or username" };
+                return BadRequest(errorResponse);
             }
             var token = CreateToken(currentUser);
             return Ok(new UserTokenDto() { Token = token });
@@ -71,7 +72,7 @@ namespace LinkAPI.Controllers
                 new Claim(ClaimTypes.Role, user.UserRole),
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.
-                GetSection("AppSettings:Token").Value));
+                GetSection("AppSettings:Token").Value!));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
@@ -83,22 +84,18 @@ namespace LinkAPI.Controllers
             return jwt;
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA256())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new HMACSHA256();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
 
-        private bool VerifyPassword(string password, byte[]passwordHash, byte[] passwordSalt)
+        private static bool VerifyPassword(string password, byte[]passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA256(passwordSalt))
-            {
-                var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computeHash.SequenceEqual(passwordHash);
-            }
+            using var hmac = new HMACSHA256(passwordSalt);
+            var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            return computeHash.SequenceEqual(passwordHash);
         }
     }
 }

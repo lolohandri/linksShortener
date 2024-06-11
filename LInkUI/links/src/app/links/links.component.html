@@ -11,15 +11,8 @@
             </mat-form-field>
             <button mat-raised-button class="button-color" class="add-button" type="submit">Add</button>
         </div>
+        <span class = "output">{{shortUrl}}</span>
     </form>
-
-    <div class="output">
-        <span>{{shortUrl}}</span>
-        <button class="button-color" (click)="onCopy()" [cdkCopyToClipboard]="shortUrl"
-            *ngIf="shortUrl != '' && httpStatus == 200">
-            {{buttonLabel}}
-        </button>
-    </div>
 </div>
 
 <div mat-dialog-actions class=" actions">

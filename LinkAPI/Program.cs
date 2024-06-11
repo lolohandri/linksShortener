@@ -1,17 +1,13 @@
 using LinkAPI.Context;
-using LinkAPI.Dto;
 using LinkAPI.Interfaces;
 using LinkAPI.Models;
 using LinkAPI.Repository;
 using LinkAPI.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileSystemGlobbing.Internal.PatternContexts;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +22,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.
-                GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+                GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
             ValidateIssuer = false,
             ValidateAudience = false,
         };
@@ -82,9 +78,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors();
-app.UseHttpsRedirection();
+app.UseCors("https://localhost:3000");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -93,13 +87,9 @@ app.MapFallback((DataContext context, HttpContext ctx) =>
 {
     var path = $"{ctx.Request.Scheme}://{ctx.Request.Host}/{ctx.Request.Path.ToUriComponent().Trim('/')}";
     var urlMatch = context.Links.FirstOrDefault(link =>
-        link.ShortLink.Trim() == path.Trim());
+        link.ShortLink!.Trim() == path.Trim());
     
-    if(urlMatch == null)
-    {
-        return Results.BadRequest("Invalid url");
-    }
-    return Results.Redirect(urlMatch.OriginLink);
+    return urlMatch == null ? Results.BadRequest("Invalid url") : Results.Redirect(urlMatch.OriginLink);
 });
 
 app.Run();

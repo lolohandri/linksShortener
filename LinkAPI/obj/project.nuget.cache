@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zRBG9VWMm7+GwX7VqDabP87Pc2A1489c+Q3D7ULnQ7gnQsqveHvvq0HhCVpbH1m12jtTXdZU+bs+WDKROBVSiQ==",
+  "dgSpecHash": "EJKuLdwRo1pYddL6G8qcVxkalXMq3n2VhZrPSnodZodjrXjFoEGO/uutJf6bEddqz0qCHvl92Cry3+tGbD9JUA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\UrlShortener\\LinkAPI\\LinkAPI.csproj",
+  "projectFilePath": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\Trash\\UrlShortener\\LinkAPI\\LinkAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sviat\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\sviat\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.16\\microsoft.aspnetcore.authentication.jwtbearer.6.0.16.nupkg.sha512",
@@ -52,5 +52,26 @@
     "C:\\Users\\sviat\\.nuget\\packages\\system.text.encodings.web\\7.0.0\\system.text.encodings.web.7.0.0.nupkg.sha512",
     "C:\\Users\\sviat\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Npgsql' 7.0.4 has a known high severity vulnerability, https://github.com/advisories/GHSA-x9vc-6hfv-hg8c",
+      "libraryId": "Npgsql",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.IdentityModel.Tokens.Jwt' 6.30.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-59j7-ghrg-fj52",
+      "libraryId": "System.IdentityModel.Tokens.Jwt",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

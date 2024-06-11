@@ -34,11 +34,6 @@ export class LinksComponent {
 
     onSubmit(): void {
         this._linkService.createLink(this.linkForm.value).subscribe({
-            next: (val: any) => {
-                this.shortUrl = val.shortLink;
-                this.httpStatus = 200;
-                this.router.navigate(['/home']);
-            },
             error: (err: any) => {
                 this.shortUrl = err.error;
                 if (err.status == 401) {
@@ -48,6 +43,12 @@ export class LinksComponent {
                     this.shortUrl = "You don`t have access to add new item";
                 }
                 this.httpStatus = err.status;
+            },
+            next: (val: any) => {
+                this.shortUrl = val.shortLink;
+                this.httpStatus = 200;
+                this._dgRef.close();
+                this.router.navigate(['/home']);
             }
         })
     }
@@ -59,12 +60,5 @@ export class LinksComponent {
 
     onClose() {
         this._dgRef.close();
-    }
-
-    onCopy(): void {
-        this.buttonLabel = 'Copied';
-        setTimeout(() => {
-            this.buttonLabel = 'Copy';
-        }, 1000);
     }
 }

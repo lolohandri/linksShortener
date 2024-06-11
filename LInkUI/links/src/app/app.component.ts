@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
         private _loginDialog: MatDialog,
         private _linkService: LinksService,
         private ref: ChangeDetectorRef,
-        private datepipe: DatePipe,
         private router: Router,
     ) {
         this.linkDialog = _linkDialog;
@@ -55,7 +54,7 @@ export class AppComponent implements OnInit {
     onLogout() {
         localStorage.removeItem('userToken');
         this.token = localStorage.getItem('userToken');
-        window.location.reload();
+        this.router.navigate(['/home']);
     }
 
     openLinkForm() {

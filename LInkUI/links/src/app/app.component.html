@@ -10,7 +10,7 @@
       <a routerLink='/home' routerLinkActive='active'>Home</a>
     </span>
 
-    <span>
+    <span *ngIf ="token != null">
       <a routerLink='/info' routerLinkActive='active'>Short Url's Info</a>
     </span>
 

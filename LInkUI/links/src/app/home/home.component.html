@@ -1,26 +1,28 @@
 <table mat-table [dataSource]="linksData" class="mat-elevation-z8">
-    <ng-container matColumnDef="originLink">
-        <th mat-header-cell *matHeaderCellDef> OriginUrl </th>
-        <td mat-cell *matCellDef="let element"> <a href="{{element.originLink}}"> {{element.originLink}} </a></td>
-    </ng-container>
+  <ng-container matColumnDef="originLink">
+    <th mat-header-cell *matHeaderCellDef> OriginUrl</th>
+    <td mat-cell *matCellDef="let element"><a href="{{element.originLink}}"> {{element.originLink}} </a></td>
+  </ng-container>
 
-    <ng-container matColumnDef="shortLink">
-        <th mat-header-cell *matHeaderCellDef> ShortUrl </th>
-        <td mat-cell *matCellDef="let element">{{element.shortLink}} </td>
-    </ng-container>
-    <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element">
-            <div class="table-buttons">
-                <button mat-flat-button color="accent" [cdkCopyToClipboard]="element.shortLink"
-                    (click)="onCopy($event)">Copy</button>
-                <button mat-flat-button color="warn" (click)="onDelete(element.id)" *ngIf="token != null">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
-        </td>
-    </ng-container>
+  <ng-container matColumnDef="shortLink">
+    <th mat-header-cell *matHeaderCellDef> ShortUrl</th>
+    <td mat-cell *matCellDef="let element">
+      <a href = "https://localhost:7076/{{element.shortLink}}">
+        https://localhost:7076/{{element.shortLink}}
+      </a>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <div class="table-buttons">
+        <button mat-flat-button color="warn" (click)="onDelete(element.id)" *ngIf="token != null">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </td>
+  </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

@@ -1,21 +1,19 @@
-﻿using LinkAPI.Context;
+﻿using System.Security.Claims;
 using LinkAPI.Dto.Link;
 using LinkAPI.Interfaces;
 using LinkAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Constraints;
-using System.Net;
 
 namespace LinkAPI.Controllers
 {
-    [Route("api/links")]
+    [Route("links")]
     [ApiController]
     public class LinkController : ControllerBase
     {
-        private IUnitOfWork _unitOfWork;
-        private IUrlShortener _urlShortener;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUrlShortener _urlShortener;
         public LinkController(IUnitOfWork unitOfWork, IUrlShortener urlShortener)
         {
             _unitOfWork = unitOfWork;
@@ -41,7 +39,7 @@ namespace LinkAPI.Controllers
         public IActionResult Get(long id)
         {
             var link = _unitOfWork.LinkRepository.Get(id);
-            if (link == null || !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Item not found");
             }
@@ -54,7 +52,7 @@ namespace LinkAPI.Controllers
         public IActionResult Create([FromBody]LinkDto link)
         {
             //validating the input url
-            if (!Uri.TryCreate(link.Url, UriKind.Absolute, out var inputLink))
+            if (!Uri.TryCreate(link.Url, UriKind.Absolute, out _))
             {
                 return BadRequest("Invalid url has been provided");
             }
@@ -64,12 +62,18 @@ namespace LinkAPI.Controllers
                 return BadRequest("Url already exists");
             }
 
+            var currentUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)!.Value;
+            if (string.IsNullOrEmpty(currentUser))
+            {
+                return Unauthorized();
+            }
 
             var shortUrl = new Link()
             {
                 OriginLink = link.Url,
                 ShortLink = _urlShortener.GetShortUrl(HttpContext),
                 Date = DateTime.Now,
+                CreatedBy = currentUser
             };
             _unitOfWork.LinkRepository.Create(shortUrl);
             _unitOfWork.Save();
@@ -90,7 +94,7 @@ namespace LinkAPI.Controllers
             {
                 return BadRequest("Item not found");
             }
-            return Ok("Succesfully deleted");
+            return Ok("Successfully deleted");
         }
     }
 }

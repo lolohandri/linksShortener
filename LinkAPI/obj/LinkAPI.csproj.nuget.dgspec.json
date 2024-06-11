@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\UrlShortener\\LinkAPI\\LinkAPI.csproj": {}
+    "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\Trash\\UrlShortener\\LinkAPI\\LinkAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\UrlShortener\\LinkAPI\\LinkAPI.csproj": {
+    "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\Trash\\UrlShortener\\LinkAPI\\LinkAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\UrlShortener\\LinkAPI\\LinkAPI.csproj",
+        "projectUniqueName": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\Trash\\UrlShortener\\LinkAPI\\LinkAPI.csproj",
         "projectName": "LinkAPI",
-        "projectPath": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\UrlShortener\\LinkAPI\\LinkAPI.csproj",
+        "projectPath": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\Trash\\UrlShortener\\LinkAPI\\LinkAPI.csproj",
         "packagesPath": "C:\\Users\\sviat\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\UrlShortener\\LinkAPI\\obj\\",
+        "outputPath": "C:\\Users\\sviat\\OneDrive\\Робочий стіл\\Trash\\UrlShortener\\LinkAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sviat\\AppData\\Roaming\\NuGet\\NuGet.Config",

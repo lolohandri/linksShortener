@@ -5,7 +5,7 @@ namespace LinkAPI.Repository
 {
     public class UserRepository : GenericRepository<User>
     {
-        public DataContext _context;
+        private readonly DataContext _context;
 
         public UserRepository(DataContext context) : base(context)
         {
@@ -14,16 +14,12 @@ namespace LinkAPI.Repository
         public bool IsUserExists(string username)
         {
             var userCheck = _context.Users.FirstOrDefault(user => user.Username == username);
-            return userCheck != null ? true : false;
+            return userCheck != null;
         }
         public User GetUserByUsername(string username)
         {
             var returnUser =  _context.Users.FirstOrDefault(user => user.Username == username);
-            if (returnUser != null)
-            {
-                return returnUser;
-            }
-            return new User();
+            return returnUser ?? new User();
         }
 
         public override void Create(User item)
