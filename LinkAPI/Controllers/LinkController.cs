@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using LinkAPI.Dto.Link;
+using LinkAPI.Dto.Pagination;
 using LinkAPI.Interfaces;
 using LinkAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -15,16 +16,31 @@ namespace LinkAPI.Controllers
         [HttpGet, AllowAnonymous]
         [EnableCors("default")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Link>))]
-        public IActionResult GetAll()
+        public IActionResult GetAllPaginated([FromQuery] PaginationParamsDto paginationParams)
         {
-            var links = unitOfWork.LinkRepository.GetAll();
+            var links = unitOfWork.LinkRepository.GetPaged(paginationParams.PageNumber,
+                paginationParams.PageSize);
+            
+            var totalCount = unitOfWork.LinkRepository.Count();
             
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
             
-            return Ok(links);
+            var response = new
+            {
+                Data = links,
+                Pagination = new
+                {
+                    paginationParams.PageNumber,
+                    paginationParams.PageSize,
+                    totalCount,
+                    totalPages = (int)Math.Ceiling(totalCount / (double)paginationParams.PageSize)
+                }
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("{id:long}")]
@@ -78,10 +94,32 @@ namespace LinkAPI.Controllers
             
             return Ok(shortUrl);
         }
+        
+        [HttpPut("{id:long}")]
+        [Authorize]
+        [ProducesResponseType(204, Type = typeof(Link))]
+        [ProducesResponseType(404, Type = typeof(void))]
+        public IActionResult Update(long id, [FromBody] LinkDto dto)
+        {
+            var updated = unitOfWork.LinkRepository.Update(id, new Link
+            {
+                OriginLink = dto.Url
+            });
+
+            if (!updated)
+            {
+                return NotFound(new{ success = false, message = "Item not found" });
+            }
+
+            unitOfWork.Save();
+            
+            return NoContent();
+        }
 
         [HttpDelete("{id:long}")]
         [EnableCors("default")]
         [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(404, Type = typeof(void))]
         public IActionResult Delete(long id)
         {
             var isDeleted = unitOfWork.LinkRepository.Delete(id);

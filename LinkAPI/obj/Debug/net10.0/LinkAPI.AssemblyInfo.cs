@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LinkAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a16f38c8d4a391269efb40b4bde99a37e3ac0d07")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2bf5d5eb09cad796f3d8eceb14294505653305a")]
 [assembly: System.Reflection.AssemblyProductAttribute("LinkAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LinkAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
