@@ -35,7 +35,7 @@ namespace LinkAPI.Controllers
 
             unitOfWork.Save();
 
-            return Ok(currentUser); 
+            return Created(); 
         }
 
         [HttpPost("login")]

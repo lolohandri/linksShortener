@@ -93,7 +93,7 @@ namespace LinkAPI.Controllers
                 return BadRequest(new{ success = false, message = "Item not found" });
             }
             
-            return Ok(new{ success = false, message = "Successfully deleted" });
+            return Ok(new{ success = true, message = "Successfully deleted" });
         }
 
         [HttpGet("{shortUrlCode}")]
