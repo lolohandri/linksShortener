@@ -3,13 +3,9 @@ using LinkAPI.Models;
 
 namespace LinkAPI.Repository
 {
-    public class LinkRepository : GenericRepository<Link>
+    public class LinkRepository(DataContext context) : GenericRepository<Link>(context)
     {
-        private readonly DataContext _context;
-        public LinkRepository(DataContext context) : base(context)
-        {
-            _context = context;
-        }
+        private readonly DataContext _context = context;
 
         public bool IsUrlExists(string url)
         {
