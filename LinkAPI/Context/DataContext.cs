@@ -7,10 +7,12 @@ namespace LinkAPI.Context
     {
         public DbSet<Link> Links { get; set; }
         public DbSet<User> Users { get; set; }
+        
         public DataContext(DbContextOptions options) : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()

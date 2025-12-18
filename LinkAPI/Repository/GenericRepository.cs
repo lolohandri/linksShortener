@@ -7,11 +7,13 @@ namespace LinkAPI.Repository
     public class GenericRepository<T> : IRepository<T> where T : class
     {
         private readonly DataContext _context;
-        private DbSet<T> DbSet { get; set; }
+        
+        private DbSet<T> DbSet { get; }
 
         protected GenericRepository(DataContext context)
         {
             _context = context;
+            
             DbSet = _context.Set<T>();
         }
 
@@ -20,7 +22,7 @@ namespace LinkAPI.Repository
             return DbSet.ToList();
         }
 
-        public virtual T Get(long id)
+        public virtual T? Get(long id)
         {
             return DbSet.Find(id)!;
         }
@@ -38,8 +40,11 @@ namespace LinkAPI.Repository
         public virtual bool Delete(long id)
         {
             var item = DbSet.Find(id);
+            
             if (item == null) return false;
+            
             _context.Remove(item);
+            
             return true;
         }
     }

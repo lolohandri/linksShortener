@@ -10,26 +10,20 @@ namespace LinkAPI.Controllers
 {
     [Route("links")]
     [ApiController]
-    public class LinkController : ControllerBase
+    public class LinkController(IUnitOfWork unitOfWork, IUrlShortener urlShortener) : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUrlShortener _urlShortener;
-        public LinkController(IUnitOfWork unitOfWork, IUrlShortener urlShortener)
-        {
-            _unitOfWork = unitOfWork;
-            _urlShortener = urlShortener;
-        }
-
         [HttpGet, AllowAnonymous]
         [EnableCors("default")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Link>))]
         public IActionResult GetAll()
         {
-            var links = _unitOfWork.LinkRepository.GetAll();
+            var links = unitOfWork.LinkRepository.GetAll();
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+            
             return Ok(links);
         }
 
@@ -38,11 +32,13 @@ namespace LinkAPI.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Link>))]
         public IActionResult Get(long id)
         {
-            var link = _unitOfWork.LinkRepository.Get(id);
-            if (!ModelState.IsValid)
+            var link = unitOfWork.LinkRepository.Get(id);
+            
+            if (link == null)
             {
-                return BadRequest("Item not found");
+                return NotFound( new { success = false, message = "Item not found" } );
             }
+            
             return Ok(link);
         }
 
@@ -51,18 +47,18 @@ namespace LinkAPI.Controllers
         [ProducesResponseType(201, Type = typeof(Link))]
         public IActionResult Create([FromBody]LinkDto link)
         {
-            //validating the input url
             if (!Uri.TryCreate(link.Url, UriKind.Absolute, out _))
             {
-                return BadRequest("Invalid url has been provided");
+                return BadRequest(new { success = false, message = "An invalid url has been provided" });
             }
 
-            if (_unitOfWork.LinkRepository.IsUrlExists(link.Url))
+            if (unitOfWork.LinkRepository.IsUrlExists(link.Url))
             {
-                return BadRequest("Url already exists");
+                return BadRequest(new{ success = false, message = "Url already exists" });
             }
 
             var currentUser = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)!.Value;
+            
             if (string.IsNullOrEmpty(currentUser))
             {
                 return Unauthorized();
@@ -71,16 +67,16 @@ namespace LinkAPI.Controllers
             var shortUrl = new Link()
             {
                 OriginLink = link.Url,
-                ShortLink = _urlShortener.GetShortUrl(HttpContext),
+                ShortLink = urlShortener.GetShortUrl(HttpContext),
                 Date = DateTime.Now,
                 CreatedBy = currentUser
             };
-            _unitOfWork.LinkRepository.Create(shortUrl);
-            _unitOfWork.Save();
-
+            
+            unitOfWork.LinkRepository.Create(shortUrl);
+            
+            unitOfWork.Save();
             
             return Ok(shortUrl);
-
         }
 
         [HttpDelete("{id:long}")]
@@ -88,13 +84,33 @@ namespace LinkAPI.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult Delete(long id)
         {
-            var check = _unitOfWork.LinkRepository.Delete(id);
-            _unitOfWork.Save();
-            if (!check)
+            var isDeleted = unitOfWork.LinkRepository.Delete(id);
+            
+            unitOfWork.Save();
+            
+            if (!isDeleted)
             {
-                return BadRequest("Item not found");
+                return BadRequest(new{ success = false, message = "Item not found" });
             }
-            return Ok("Successfully deleted");
+            
+            return Ok(new{ success = false, message = "Successfully deleted" });
+        }
+
+        [HttpGet("{shortUrlCode}")]
+        [EnableCors("default")]
+        [ProducesResponseType(200, Type = typeof(void))]
+        public IActionResult RedirectByShortRepresentation([FromRoute] string shortUrlCode)
+        {
+            var url = unitOfWork.LinkRepository.GetAll().FirstOrDefault(link => link.ShortLink.Equals(shortUrlCode));
+
+            if (url == null)
+            {
+                return NotFound(new { success = false, message = "Item not found" });
+            }
+
+            var originalUrl = url.OriginLink;
+
+            return Redirect(originalUrl);
         }
     }
 }
